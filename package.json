@@ -1,0 +1,25 @@
+{
+  "name": "7pace-timetracker-autofill",
+  "version": "0.1.0",
+  "description": "Autofill 7pace timetracker in Azure DevOps for lazy people",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VictorRos/7pace-timetracker-autofill.git"
+  },
+  "keywords": [
+    "7pace",
+    "Timetracker",
+    "Azure",
+    "DevOps"
+  ],
+  "author": "Victor Ros",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/VictorRos/7pace-timetracker-autofill/issues"
+  },
+  "homepage": "https://github.com/VictorRos/7pace-timetracker-autofill#readme"
+}
