@@ -22,7 +22,7 @@
     "DevOps"
   ],
   "author": "Victor Ros",
-  "license": "SEE LICENSE IN LICENSE.md",
+  "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {},
   "dependencies": {
     "@socialgouv/jours-feries": "^2.0.0",

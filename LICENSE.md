@@ -1,1 +1,0 @@
-© Copyright 2021 Victor Ros, all rights reserved.

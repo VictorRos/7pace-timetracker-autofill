@@ -34,7 +34,7 @@ const WORKING_DAY_TASKS = [
     {lengthInHour: 3, activityTypeId: ACTIVITY_DEVELOPMENT,        comment: "Dev + PRs"},
     {lengthInHour: 3, activityTypeId: ACTIVITY_DEVELOPMENT,        comment: "DevOps"}
 ];
-const PUBLIC_DAY_TASK = [
+const PUBLIC_DAY_TASKS = [
     {lengthInHour: 7, activityTypeId: ACTIVITY_DAY_OFF, comment: "Jour férié"}
 ];
 
@@ -91,7 +91,7 @@ const createTasks = (_date) => {
 
     // Get tasks
     const tasks = isPublicDay(_date)
-        ? PUBLIC_DAY_TASK
+        ? PUBLIC_DAY_TASKS
         : WORKING_DAY_TASKS;
 
     // Create tasks
