@@ -4,6 +4,10 @@
   "description": "Autofill 7pace timetracker in Azure DevOps for lazy people",
   "type": "module",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "src"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,9 +27,9 @@
   ],
   "author": "Victor Ros",
   "license": "SEE LICENSE IN LICENSE",
-  "devDependencies": {},
   "dependencies": {
     "@socialgouv/jours-feries": "^2.0.0",
+    "axios": "^0.24.0",
     "date-fns": "^2.27.0",
     "dotenv": "^10.0.0"
   }
