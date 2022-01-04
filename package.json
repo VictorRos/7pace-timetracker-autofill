@@ -1,6 +1,6 @@
 {
   "name": "7pace-timetracker-autofill",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Autofill 7pace timetracker in Azure DevOps for lazy people",
   "type": "module",
   "main": "index.js",
@@ -25,6 +25,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {},
   "dependencies": {
+    "@socialgouv/jours-feries": "^2.0.0",
     "date-fns": "^2.27.0",
     "dotenv": "^10.0.0"
   }
