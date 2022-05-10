@@ -31,6 +31,7 @@
     "@socialgouv/jours-feries": "^2.0.0",
     "axios": "^0.24.0",
     "date-fns": "^2.27.0",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "yargs": "^17.3.1"
   }
 }

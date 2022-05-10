@@ -1,6 +1,7 @@
 import DateFNS from "date-fns";
 import getPublicDays from "@socialgouv/jours-feries";
 
+import ContextManager from "./ContextManager.js";
 import Logger from "./Logger.js";
 import TimeTrackerAPI from "./TimeTrackerAPI.js";
 
@@ -58,7 +59,7 @@ class TimeTrackerRunner {
             workItemId: null,
             repoId: null,
             repoFullName: null,
-            userId: process.env.USER_ID
+            userId: ContextManager.get().userId
         };
 
         // Get tasks
@@ -82,9 +83,13 @@ class TimeTrackerRunner {
         }, Promise.resolve());
     }
 
+    /**
+     * Run Time tracker.
+     * @returns {Promise<void>} Nothing.
+     */
     static async run() {
-        let startDate = DateFNS.parse(process.env.START_STR, "yyyy-MM-dd", new Date());
-        const endDate = DateFNS.parse(process.env.END_STR, "yyyy-MM-dd", new Date());
+        let startDate = DateFNS.parse(ContextManager.get().startDate, "yyyy-MM-dd", new Date());
+        const endDate = DateFNS.parse(ContextManager.get().endDate, "yyyy-MM-dd", new Date());
 
         Logger.info("Start Time tracker");
 

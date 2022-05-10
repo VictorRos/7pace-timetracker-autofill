@@ -1,6 +1,7 @@
 import DateFNS from "date-fns";
 import Axios from "axios";
 
+import ContextManager from "./ContextManager.js";
 import Logger from "./Logger.js";
 
 class TimeTrackerAPI {
@@ -42,9 +43,9 @@ class TimeTrackerAPI {
                     "sec-fetch-dest": "empty",
                     "sec-fetch-mode": "cors",
                     "sec-fetch-site": "same-origin",
-                    "x-custom-header": process.env.X_CUSTOM_HEADER,
+                    "x-custom-header": ContextManager.get().timeTrackerXCustomHeader,
                     "x-requested-with": "XMLHttpRequest",
-                    "cookie": process.env.COOKIE,
+                    "cookie": ContextManager.get().timeTrackerCookie,
                     "Referer": "https://cegid.timehub.7pace.com/",
                     "Referrer-Policy": "strict-origin-when-cross-origin"
                 }
@@ -67,7 +68,7 @@ class TimeTrackerAPI {
             {
                 headers: {
                     "accept": "application/json, text/plain, */*",
-                    "authorization": `Bearer ${process.env.BEARER_TOKEN}`,
+                    "authorization": `Bearer ${ContextManager.get().timeTrackerBearerToken}`,
                     "client_type": "web",
                     "content-type": "application/json;charset=UTF-8",
                     "page_name": "Monthly",
@@ -77,9 +78,9 @@ class TimeTrackerAPI {
                     "sec-fetch-dest": "empty",
                     "sec-fetch-mode": "cors",
                     "sec-fetch-site": "same-origin",
-                    "token": process.env.TOKEN,
-                    "x-custom-header": process.env.X_CUSTOM_HEADER,
-                    "cookie": process.env.COOKIE,
+                    "token": ContextManager.get().timeTrackerToken,
+                    "x-custom-header": ContextManager.get().timeTrackerXCustomHeader,
+                    "cookie": ContextManager.get().timeTrackerCookie,
                     "Referer": "https://cegid.timehub.7pace.com/",
                     "Referrer-Policy": "strict-origin-when-cross-origin"
                 }
