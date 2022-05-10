@@ -1,6 +1,6 @@
 {
   "name": "7pace-timetracker-autofill",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Autofill 7pace timetracker in Azure DevOps for lazy people",
   "type": "module",
   "main": "index.js",
