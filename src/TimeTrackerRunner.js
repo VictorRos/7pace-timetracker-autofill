@@ -17,9 +17,9 @@ const STATIC_WORKING_DAY_TASKS = [
 ];
 const REMAINING_HOURS = 3;
 const DYNAMIC_WORKING_DAY_TASKS = [
-    {lengthInHour: 0, activityType: ACTIVITY_DEVELOPMENT,    comment: "Dev + PRs"},
-    {lengthInHour: 0, activityType: ACTIVITY_SAAS_OPERATION, comment: "Support Production"},
-    {lengthInHour: 0, activityType: ACTIVITY_SAAS_OPERATION, comment: "Support Dev"}
+    {lengthInHour: 0, activityTypeId: ACTIVITY_DEVELOPMENT,    comment: "Dev + PRs"},
+    {lengthInHour: 0, activityTypeId: ACTIVITY_SAAS_OPERATION, comment: "Support Production"},
+    {lengthInHour: 0, activityTypeId: ACTIVITY_SAAS_OPERATION, comment: "Support Dev"}
 ];
 const PUBLIC_DAY_TASKS = [
     {lengthInHour: 7, activityTypeId: ACTIVITY_DAY_OFF, comment: "Jour férié"}
@@ -91,18 +91,19 @@ class TimeTrackerRunner {
             // Add random tasks
             let hours = 0;
             let neededHours = REMAINING_HOURS - hours;
+            const dynamicWorkingDay = JSON.parse(JSON.stringify(DYNAMIC_WORKING_DAY_TASKS));
             while (hours < REMAINING_HOURS) {
                 const randHours = TimeTrackerRunner.between(0, neededHours);
-                const randType = TimeTrackerRunner.between(0, DYNAMIC_WORKING_DAY_TASKS.length - 1);
+                const randType = TimeTrackerRunner.between(0, dynamicWorkingDay.length - 1);
                 // Update task hours
-                DYNAMIC_WORKING_DAY_TASKS[randType].lengthInHour += randHours;
+                dynamicWorkingDay[randType].lengthInHour += randHours;
                 hours += randHours;
                 neededHours = REMAINING_HOURS - hours;
             }
             // Add dynamic tasks
             tasks = tasks.concat(
                 // Filter empty tasks
-                DYNAMIC_WORKING_DAY_TASKS.filter((_task) => _task.lengthInHour > 0)
+                dynamicWorkingDay.filter((_task) => _task.lengthInHour > 0)
             );
         }
 
@@ -143,8 +144,20 @@ class TimeTrackerRunner {
             if (workLogs?.data?.length === 0) {
                 await this.createTasks(startDate, me.data.user.id);
             } else {
-                // TODO: Fill with a work log to make 7 hours a day
-                Logger.info("Work logs already exist.");
+                if(ContextManager.get().force) {
+                    Logger.info("Force mode, delete all work logs");
+                    // Delete all work logs if the work is not day off
+                    await workLogs.data.reduce(async (_prom, _workLog) => {
+                        await _prom;
+                        if (_workLog.activityType?.id !== ACTIVITY_DAY_OFF) {
+                            await TimeTrackerAPI.deleteWorkLog(_workLog.id);
+                        }
+                    }, Promise.resolve());
+                    await this.createTasks(startDate, me.data.user.id);
+                }else {
+                    // TODO: Fill with a work log to make 7 hours a day
+                    Logger.info("Work logs already exist.");
+                }
             }
 
             // Update to next day

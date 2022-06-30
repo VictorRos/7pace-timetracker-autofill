@@ -50,7 +50,6 @@ class TimeTrackerAPI {
      * @public
      */
     static async getMe() {
-
         const response = await Axios.get(
             `https://cegid.timehub.7pace.com/api/rest/me?${TimeTrackerAPI.apiVersion}`,
             {
@@ -62,7 +61,26 @@ class TimeTrackerAPI {
 
         return this.handleResponse(response);
     }
-    
+
+    /**
+     * This endpoint deletes a work log.
+     * @param {String} _workLogId Work log id.
+     * @returns {Promise<object>} Work log data.
+     * @public
+     */
+    static async deleteWorkLog(_workLogId) {
+        const response = await Axios.delete(
+            `https://cegid.timehub.7pace.com/api/rest/workLogs/${_workLogId}?${TimeTrackerAPI.apiVersion}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
+                }
+            }
+        );
+
+        return this.handleResponse(response);
+    }
+
     /**
      * Create new Work Logs.
      * @param {object} _postData Data to send.
@@ -71,7 +89,7 @@ class TimeTrackerAPI {
      */
     static async createWorkLogs(_postData) {
         const response = await Axios.post(
-            "https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.apiVersion}",
+            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.apiVersion}`,
             _postData,
             {
                 headers: {

@@ -50,6 +50,11 @@ const context = Yargs(hideBin(process.argv))
         type: "boolean",
         default: false
     })
+    .option("force", {
+        description: "Clean the day if it's not a day off",
+        type: "boolean",
+        default: false
+    })
     .argv;
 
 // Context
