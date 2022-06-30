@@ -11,28 +11,16 @@ const ACTIVITY_PROJECT_MANAGEMENT = "d968a6e5-6d9f-4fa2-b248-5201bd9a3015"; // 0
 const ACTIVITY_DEVELOPMENT = "c30c3a6d-aacd-46b2-833d-acd3d33d830d"; // 03. Development
 const ACTIVITY_SAAS_OPERATION = "6e00c587-525c-4c1d-880e-0e20fd815dd5"; // 01. Deployment: SAAS Opérations
 const ACTIVITY_DAY_OFF = "61e63283-5eec-4853-9a1a-a15550da0d46"; // 17. OoB : Time off
-const WORKING_DAY_TASKS = [
+const STATIC_WORKING_DAY_TASKS = [
     {lengthInHour: 1, activityTypeId: ACTIVITY_PROJECT_MANAGEMENT, comment: "Daily DevOps & Réunions diverses"},
-    {lengthInHour: 0, activityTypeId: ACTIVITY_DEVELOPMENT,        comment: "Dev + PRs"},
     {lengthInHour: 3, activityTypeId: ACTIVITY_DEVELOPMENT,        comment: "DevOps"}
 ];
-const randomHours = 3;
-const addRandomType = [{
-        comment: "Dev + PRs",
-        lengthInHour: 0,
-        activityType: ACTIVITY_DEVELOPMENT
-    },
-    {
-        comment: "Support Production",
-        lengthInHour: 0,
-        activityType: ACTIVITY_SAAS_OPERATION
-    },
-    {
-        comment: "Support Dev",
-        lengthInHour: 0,
-        activityType: ACTIVITY_SAAS_OPERATION
-    }
-]
+const REMAINING_HOURS = 3;
+const DYNAMIC_WORKING_DAY_TASKS = [
+    {lengthInHour: 0, activityType: ACTIVITY_DEVELOPMENT,    comment: "Dev + PRs"},
+    {lengthInHour: 0, activityType: ACTIVITY_SAAS_OPERATION, comment: "Support Production"},
+    {lengthInHour: 0, activityType: ACTIVITY_SAAS_OPERATION, comment: "Support Dev"}
+];
 const PUBLIC_DAY_TASKS = [
     {lengthInHour: 7, activityTypeId: ACTIVITY_DAY_OFF, comment: "Jour férié"}
 ];
@@ -82,23 +70,27 @@ class TimeTrackerRunner {
 
         // Get tasks
         let tasks = [];
-        if(this.isPublicDay(_date)) {
+        if (this.isPublicDay(_date)) {
             tasks = PUBLIC_DAY_TASKS;
-        }
-        else { // Working day
+        // Working day
+        } else {
             tasks = WORKING_DAY_TASKS;
             // Add random tasks
             let hours = 0;
-            let neededHours = randomHours - hours;
-            while (hours < randomHours) {
+            let neededHours = REMAINING_HOURS - hours;
+            while (hours < REMAINING_HOURS) {
                 const randHours = between(0, neededHours);
-                const randType = between(0, addRandomTypeCp.length - 1);
-                addRandomTypeCp[randType].hours += randHours;
+                const randType = between(0, DYNAMIC_WORKING_DAY_TASKS.length - 1);
+                // Update task hours
+                DYNAMIC_WORKING_DAY_TASKS[randType].hours += randHours;
                 hours += randHours;
-                neededHours = randomHours - hours;
+                neededHours = REMAINING_HOURS - hours;
             }
-            tasks = tasks.concat(addRandomTypeCp);
-            tasks = tasks.filter(task => task.hours > 0);
+            // Add dynamic tasks
+            tasks = tasks.concat(
+                // Filter empty tasks
+                DYNAMIC_WORKING_DAY_TASKS.filter((_task) => _task.hours > 0)
+            );
         }
 
         // Create tasks
