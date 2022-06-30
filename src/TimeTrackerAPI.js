@@ -5,7 +5,8 @@ import ContextManager from "./ContextManager.js";
 import Logger from "./Logger.js";
 
 class TimeTrackerAPI {
-    static apiVersion = "api-version=3.2-beta";
+    static API_VERSION = "api-version=3.2-beta";
+
     /**
      * Returns data from response.
      * @param {AxiosResponse} _response Response.
@@ -32,7 +33,7 @@ class TimeTrackerAPI {
         const day = DateFNS.format(_date, "dd");
 
         const response = await Axios.get(
-            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.apiVersion}&$fromTimestamp=${year}-${month}-${day}T00:00:00&$toTimestamp=${year}-${month}-${day}T23:59:00`,
+            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.API_VERSION}&$fromTimestamp=${year}-${month}-${day}T00:00:00&$toTimestamp=${year}-${month}-${day}T23:59:00`,
             {
                 headers: {
                     'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
@@ -44,14 +45,15 @@ class TimeTrackerAPI {
     }
 
     /**
-     * This endpoint allows you to get information about yourself.
-     * It is possible to use the $expand parameter with this endpoint. The possible options are { user.displayName }. 
-     * @returns {Promise<object>} user info data.
+     * Get information about yourself.
+     * It is possible to use the $expand parameter with this endpoint.
+     * The possible options are { user.displayName }.
+     * @returns {Promise<object>} User info data.
      * @public
      */
     static async getMe() {
         const response = await Axios.get(
-            `https://cegid.timehub.7pace.com/api/rest/me?${TimeTrackerAPI.apiVersion}`,
+            `https://cegid.timehub.7pace.com/api/rest/me?${TimeTrackerAPI.API_VERSION}`,
             {
                 headers: {
                     'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
@@ -63,14 +65,14 @@ class TimeTrackerAPI {
     }
 
     /**
-     * This endpoint deletes a work log.
-     * @param {String} _workLogId Work log id.
-     * @returns {Promise<object>} Work log data.
+     * Delete a work log.
+     * @param {String} _workLogId Work log ID.
+     * @returns {Promise<object>} Deleted Work log data.
      * @public
      */
     static async deleteWorkLog(_workLogId) {
         const response = await Axios.delete(
-            `https://cegid.timehub.7pace.com/api/rest/workLogs/${_workLogId}?${TimeTrackerAPI.apiVersion}`,
+            `https://cegid.timehub.7pace.com/api/rest/workLogs/${_workLogId}?${TimeTrackerAPI.API_VERSION}`,
             {
                 headers: {
                     'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
@@ -89,7 +91,7 @@ class TimeTrackerAPI {
      */
     static async createWorkLogs(_postData) {
         const response = await Axios.post(
-            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.apiVersion}`,
+            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.API_VERSION}`,
             _postData,
             {
                 headers: {

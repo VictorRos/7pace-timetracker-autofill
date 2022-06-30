@@ -5,22 +5,26 @@ import ContextManager from "./ContextManager.js";
 import Logger from "./Logger.js";
 import TimeTrackerAPI from "./TimeTrackerAPI.js";
 
-// Constantes
+// Constants
 const ONE_HOUR_IN_SEC = 3600;
+
 const ACTIVITY_PROJECT_MANAGEMENT = "d968a6e5-6d9f-4fa2-b248-5201bd9a3015"; // 00. Project management and meetings
 const ACTIVITY_DEVELOPMENT = "c30c3a6d-aacd-46b2-833d-acd3d33d830d"; // 03. Development
 const ACTIVITY_SAAS_OPERATION = "6e00c587-525c-4c1d-880e-0e20fd815dd5"; // 01. Deployment: SAAS Opérations
 const ACTIVITY_DAY_OFF = "61e63283-5eec-4853-9a1a-a15550da0d46"; // 17. OoB : Time off
+// Worklogs added each day (4 hours)
 const STATIC_WORKING_DAY_TASKS = [
     {lengthInHour: 1, activityTypeId: ACTIVITY_PROJECT_MANAGEMENT, comment: "Daily DevOps & Réunions diverses"},
     {lengthInHour: 3, activityTypeId: ACTIVITY_DEVELOPMENT,        comment: "DevOps"}
 ];
+// Worklogs added randomly each day (3 hours)
 const REMAINING_HOURS = 3;
 const DYNAMIC_WORKING_DAY_TASKS = [
     {lengthInHour: 0, activityTypeId: ACTIVITY_DEVELOPMENT,    comment: "Dev + PRs"},
     {lengthInHour: 0, activityTypeId: ACTIVITY_SAAS_OPERATION, comment: "Support Production"},
     {lengthInHour: 0, activityTypeId: ACTIVITY_SAAS_OPERATION, comment: "Support Dev"}
 ];
+// France public days
 const PUBLIC_DAY_TASKS = [
     {lengthInHour: 7, activityTypeId: ACTIVITY_DAY_OFF, comment: "Jour férié"}
 ];
@@ -40,10 +44,10 @@ class TimeTrackerRunner {
     }
 
     /**
-     * Randomly generate a number between min and max.
+     * Randomly generate an integer between min and max.
      * @param {Number} min Minimum value.
      * @param {Number} max Maximum value.
-     * @returns {Number} Random number.
+     * @returns {Number} Random integer.
      */
     static between(min, max) {
         return Math.floor(
@@ -54,7 +58,7 @@ class TimeTrackerRunner {
     /**
      * Create tasks for the specified date.
      * @param {Date} _date Date.
-     * @param {String} _userId User id.
+     * @param {String} _userId User ID.
      * @returns {Promise<void>} Nothing.
      * @private
      */
@@ -91,6 +95,7 @@ class TimeTrackerRunner {
             // Add random tasks
             let hours = 0;
             let neededHours = REMAINING_HOURS - hours;
+            // Deep copy
             const dynamicWorkingDay = JSON.parse(JSON.stringify(DYNAMIC_WORKING_DAY_TASKS));
             while (hours < REMAINING_HOURS) {
                 const randHours = TimeTrackerRunner.between(0, neededHours);
@@ -128,45 +133,52 @@ class TimeTrackerRunner {
      * @returns {Promise<void>} Nothing.
      */
     static async run() {
-        let startDate = DateFNS.parse(ContextManager.get().startDate, "yyyy-MM-dd", new Date());
+        const startDate = DateFNS.parse(ContextManager.get().startDate, "yyyy-MM-dd", new Date());
         const endDate = DateFNS.parse(ContextManager.get().endDate, "yyyy-MM-dd", new Date());
+        let currentDate = startDate;
 
         Logger.info("Start Time tracker");
 
         const me = await TimeTrackerAPI.getMe(); 
 
         // Loop through startDate to endDate
-        while (DateFNS.isBefore(startDate, endDate) || DateFNS.isEqual(startDate, endDate)) {
-            const displayDate = DateFNS.format(startDate, "eeee dd MMMM yyyy");
+        while (DateFNS.isBefore(currentDate, endDate) || DateFNS.isEqual(currentDate, endDate)) {
+            const displayDate = DateFNS.format(currentDate, "eeee dd MMMM yyyy");
             Logger.info(`\n${displayDate}`);
 
-            const workLogs = await TimeTrackerAPI.getWorkLogs(startDate);
+            const workLogs = await TimeTrackerAPI.getWorkLogs(currentDate);
+            // No worklogs
             if (workLogs?.data?.length === 0) {
-                await this.createTasks(startDate, me.data.user.id);
+                await this.createTasks(currentDate, me.data.user.id);
+            // Existing worklogs
             } else {
+                // Override existing work logs
                 if(ContextManager.get().force) {
-                    Logger.info("Force mode, delete all work logs");
-                    // Delete all work logs if the work is not day off
+                    Logger.info("Force mode enabled ! Delete all existing work logs (except days off)");
+
+                    // Delete all existing work logs except days off
                     const workLogNotDelete = await workLogs.data.reduce(async (_prom, _workLog) => {
                         await _prom;
                         if (_workLog.activityType?.id !== ACTIVITY_DAY_OFF) {
                             await TimeTrackerAPI.deleteWorkLog(_workLog.id);
-                        }else {
-                            // return the worklog id
+                        } else {
+                            // Return work log ID
                             return _workLog.id;
                         }
                     }, Promise.resolve());
+
                     if(!workLogNotDelete) {
-                        await this.createTasks(startDate, me.data.user.id);
+                        await this.createTasks(currentDate, me.data.user.id);
                     }
-                }else {
-                    // TODO: Fill with a work log to make 7 hours a day
+                // Fill with work logs to have 7 hours a day
+                } else {
+                    // TODO: Fill with work logs to have 7 hours a day
                     Logger.info("Work logs already exist.");
                 }
             }
 
             // Update to next day
-            startDate = DateFNS.add(startDate, {days: 1});
+            currentDate = DateFNS.add(currentDate, {days: 1});
         }
     }
 }

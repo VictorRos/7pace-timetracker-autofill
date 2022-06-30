@@ -8,8 +8,6 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
       - [CLI mode](#cli-mode)
       - [Env file mode](#env-file-mode)
   - [Secrets](#secrets)
-    - [Time tracker](#time-tracker)
-    - [User ID](#user-id)
   - [License](#license)
 
 ## How it works?
@@ -39,7 +37,8 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   ```bash
   node index.js \
     --start-date=<Start date YYYY-MM-DD> \
-    --end-date=<End date YYYY-MM-DD (included)>
+    --end-date=<End date YYYY-MM-DD (included)> \
+    --time-tracker-api-token=<SECRET Bearer token>
   ```
 
 #### Env file mode
@@ -51,9 +50,6 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   TIME_TRACKER_START_DATE=<Start date YYYY-MM-DD>
   TIME_TRACKER_END_DATE=<End date YYYY-MM-DD (included)>
   TIME_TRACKER_API_TOKEN=<SECRET Bearer token>
-
-  ```
-
   ```
 
 - Run node script.
@@ -63,10 +59,10 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   ```
 
 ## Secrets
-How to get secret api token :
-https://support.7pace.com/hc/en-us/articles/360035502332-Reporting-API-3-%23connecting-to-api-with-apps#connecting-to-api-with-apps
 
+How to get secret **Reporting API token**
 
+[![Reporting API token video](https://img.youtube.com/vi/g2xyQtOhqS4/0.jpg)](https://www.youtube.com/watch?v=g2xyQtOhqS4 "Everything Is AWESOME")
 
 ## License
 
