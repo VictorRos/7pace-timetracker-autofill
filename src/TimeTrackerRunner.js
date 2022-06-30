@@ -40,12 +40,25 @@ class TimeTrackerRunner {
     }
 
     /**
+     * Randomly generate a number between min and max.
+     * @param {Number} min Minimum value.
+     * @param {Number} max Maximum value.
+     * @returns {Number} Random number.
+     */
+    static between(min, max) {
+        return Math.floor(
+            Math.random() * (max - min + 1) + min
+        )
+    }
+
+    /**
      * Create tasks for the specified date.
      * @param {Date} _date Date.
+     * @param {String} _userId User id.
      * @returns {Promise<void>} Nothing.
      * @private
      */
-    static async createTasks(_date) {
+    static async createTasks(_date, _userId) {
         // Ignore weekend
         if (DateFNS.isSaturday(_date)) {
             Logger.info("--> Ignore saturdays.");
@@ -65,7 +78,7 @@ class TimeTrackerRunner {
             workItemId: null,
             repoId: null,
             repoFullName: null,
-            userId: ContextManager.get().userId
+            userId: _userId
         };
 
         // Get tasks
@@ -74,22 +87,22 @@ class TimeTrackerRunner {
             tasks = PUBLIC_DAY_TASKS;
         // Working day
         } else {
-            tasks = WORKING_DAY_TASKS;
+            tasks = STATIC_WORKING_DAY_TASKS;
             // Add random tasks
             let hours = 0;
             let neededHours = REMAINING_HOURS - hours;
             while (hours < REMAINING_HOURS) {
-                const randHours = between(0, neededHours);
-                const randType = between(0, DYNAMIC_WORKING_DAY_TASKS.length - 1);
+                const randHours = TimeTrackerRunner.between(0, neededHours);
+                const randType = TimeTrackerRunner.between(0, DYNAMIC_WORKING_DAY_TASKS.length - 1);
                 // Update task hours
-                DYNAMIC_WORKING_DAY_TASKS[randType].hours += randHours;
+                DYNAMIC_WORKING_DAY_TASKS[randType].lengthInHour += randHours;
                 hours += randHours;
                 neededHours = REMAINING_HOURS - hours;
             }
             // Add dynamic tasks
             tasks = tasks.concat(
                 // Filter empty tasks
-                DYNAMIC_WORKING_DAY_TASKS.filter((_task) => _task.hours > 0)
+                DYNAMIC_WORKING_DAY_TASKS.filter((_task) => _task.lengthInHour > 0)
             );
         }
 
@@ -119,14 +132,16 @@ class TimeTrackerRunner {
 
         Logger.info("Start Time tracker");
 
+        const me = await TimeTrackerAPI.getMe(); 
+
         // Loop through startDate to endDate
         while (DateFNS.isBefore(startDate, endDate) || DateFNS.isEqual(startDate, endDate)) {
             const displayDate = DateFNS.format(startDate, "eeee dd MMMM yyyy");
             Logger.info(`\n${displayDate}`);
 
             const workLogs = await TimeTrackerAPI.getWorkLogs(startDate);
-            if (workLogs?.logs?.length === 0) {
-                await this.createTasks(startDate);
+            if (workLogs?.data?.length === 0) {
+                await this.createTasks(startDate, me.data.user.id);
             } else {
                 // TODO: Fill with a work log to make 7 hours a day
                 Logger.info("Work logs already exist.");

@@ -38,33 +38,11 @@ const context = Yargs(hideBin(process.argv))
         demandOption: true,
         default: process.env.TIME_TRACKER_END_DATE
     })
-    .option("user-id", {
-        alias: "u",
-        description: "User ID to whom create work logs",
-        type: "string",
-        demandOption: true,
-        default: process.env.TIME_TRACKER_USER_ID
-    })
     // Time tracker options
-    .option("time-tracker-bearer-token", {
-        description: "Time tracker Bearer token used to create work logs",
+    .option("time-tracker-api-token", {
+        description: "Time tracker API token used to create work logs",
         type: "string",
-        default: process.env.TIME_TRACKER_BEARER_TOKEN
-    })
-    .option("time-tracker-cookie", {
-        description: "Time tracker Cookie used to create work logs",
-        type: "string",
-        default: process.env.TIME_TRACKER_COOKIE
-    })
-    .option("time-tracker-token", {
-        description: "Time tracker Token used to create work logs",
-        type: "string",
-        default: process.env.TIME_TRACKER_TOKEN
-    })
-    .option("time-tracker-x-custom-header", {
-        description: "Time tracker X-CUSTOM-HEADER used to create work logs",
-        type: "string",
-        default: process.env.TIME_TRACKER_X_CUSTOM_HEADER
+        default: process.env.TIME_TRACKER_API_TOKEN
     })
     // Optional options
     .option("only-public-days", {
