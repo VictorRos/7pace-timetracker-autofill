@@ -5,6 +5,7 @@ import ContextManager from "./ContextManager.js";
 import Logger from "./Logger.js";
 
 class TimeTrackerAPI {
+    static apiVersion = "api-version=3.2-beta";
     /**
      * Returns data from response.
      * @param {AxiosResponse} _response Response.
@@ -31,7 +32,7 @@ class TimeTrackerAPI {
         const day = DateFNS.format(_date, "dd");
 
         const response = await Axios.get(
-            `https://cegid.timehub.7pace.com/api/rest/workLogs?api-version=3.2-beta&$fromTimestamp=${year}-${month}-${day}T00:00:00&$toTimestamp=${year}-${month}-${day}T23:59:00`,
+            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.apiVersion}&$fromTimestamp=${year}-${month}-${day}T00:00:00&$toTimestamp=${year}-${month}-${day}T23:59:00`,
             {
                 headers: {
                     'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
@@ -51,7 +52,7 @@ class TimeTrackerAPI {
     static async getMe() {
 
         const response = await Axios.get(
-            `https://cegid.timehub.7pace.com/api/rest/me?api-version=3.2-beta`,
+            `https://cegid.timehub.7pace.com/api/rest/me?${TimeTrackerAPI.apiVersion}`,
             {
                 headers: {
                     'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
@@ -70,7 +71,7 @@ class TimeTrackerAPI {
      */
     static async createWorkLogs(_postData) {
         const response = await Axios.post(
-            "https://cegid.timehub.7pace.com/api/rest/workLogs?api-version=3.2-beta",
+            "https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.apiVersion}",
             _postData,
             {
                 headers: {
