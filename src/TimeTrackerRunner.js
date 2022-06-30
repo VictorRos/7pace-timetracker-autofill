@@ -147,13 +147,18 @@ class TimeTrackerRunner {
                 if(ContextManager.get().force) {
                     Logger.info("Force mode, delete all work logs");
                     // Delete all work logs if the work is not day off
-                    await workLogs.data.reduce(async (_prom, _workLog) => {
+                    const workLogNotDelete = await workLogs.data.reduce(async (_prom, _workLog) => {
                         await _prom;
                         if (_workLog.activityType?.id !== ACTIVITY_DAY_OFF) {
                             await TimeTrackerAPI.deleteWorkLog(_workLog.id);
+                        }else {
+                            // return the worklog id
+                            return _workLog.id;
                         }
                     }, Promise.resolve());
-                    await this.createTasks(startDate, me.data.user.id);
+                    if(!workLogNotDelete) {
+                        await this.createTasks(startDate, me.data.user.id);
+                    }
                 }else {
                     // TODO: Fill with a work log to make 7 hours a day
                     Logger.info("Work logs already exist.");
