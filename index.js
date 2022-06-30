@@ -51,7 +51,7 @@ const context = Yargs(hideBin(process.argv))
         default: false
     })
     .option("force", {
-        description: "Clean the day if it's not a day off",
+        description: "Override existing work logs except days off",
         type: "boolean",
         default: false
     })
