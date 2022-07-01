@@ -1,3 +1,4 @@
+import Chalk from "chalk";
 import DateFNS from "date-fns";
 import getPublicDays from "@socialgouv/jours-feries";
 
@@ -32,7 +33,36 @@ const DYNAMIC_WORKING_DAY_TASKS = [
     {lengthInHour: 0, activityTypeId: ACTIVITY_SAAS_OPERATION, comment: "Support Dev"}
 ];
 
+// Colors
+const COLOR = {
+    CRIMSON: Chalk.rgb(220, 20, 60),
+    DEEP_SKY_BLUE: Chalk.rgb(0, 191, 255),
+    GREEN_YELLOW: Chalk.rgb(173, 255, 47),
+    SALMON: Chalk.rgb(250, 128, 114),
+    YELLOW: Chalk.rgb(255, 255, 0)
+};
+
 class TimeTrackerRunner {
+    /**
+     * Format and display date.
+     * - Specific color for public day
+     * - Specific color for weekend
+     * - Specific color for weekday
+     * @param {Date} _date Date to format and display.
+     * @returns {string} Date to string colorized depending on what day it is.
+     */
+    static displayDate(_date) {
+        const displayDate = DateFNS.format(_date, "eeee dd MMMM yyyy");
+
+        if (this.isPublicDay(_date)) {
+            return COLOR.GREEN_YELLOW(displayDate);
+        } else if (DateFNS.isWeekend(_date)) {
+            return COLOR.SALMON(displayDate);
+        } else {
+            return COLOR.DEEP_SKY_BLUE(displayDate);
+        }
+    }
+
     /**
      * Check it date is a day off in France.
      * @param {Date} _date Date to check.
@@ -140,19 +170,18 @@ class TimeTrackerRunner {
         const endDate = DateFNS.parse(ContextManager.get().endDate, "yyyy-MM-dd", new Date());
         let currentDate = startDate;
 
-        Logger.info("Start Time tracker");
+        Logger.info(COLOR.YELLOW("Start Time tracker"));
 
         // Show force mode log once
         if (ContextManager.get().force) {
-            Logger.info("\nForce mode enabled ! Delete all existing work logs (except days off)");
+            Logger.info(COLOR.CRIMSON("\nForce mode enabled ! Delete all existing work logs (except days off)"));
         }
 
         const me = await TimeTrackerAPI.getMe(); 
 
         // Loop through startDate to endDate
         while (DateFNS.isBefore(currentDate, endDate) || DateFNS.isEqual(currentDate, endDate)) {
-            const displayDate = DateFNS.format(currentDate, "eeee dd MMMM yyyy");
-            Logger.info(`\n${displayDate}`);
+            Logger.info(`\n${this.displayDate(currentDate)}`);
 
             const workLogs = await TimeTrackerAPI.getWorkLogs(currentDate);
             // No worklogs
