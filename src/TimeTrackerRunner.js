@@ -78,9 +78,9 @@ class TimeTrackerRunner {
 
     /**
      * Randomly generate an integer between min and max.
-     * @param {Number} min Minimum value.
-     * @param {Number} max Maximum value.
-     * @returns {Number} Random integer.
+     * @param {number} min Minimum value.
+     * @param {number} max Maximum value.
+     * @returns {number} Random integer.
      */
     static between(min, max) {
         return Math.floor(
@@ -91,7 +91,7 @@ class TimeTrackerRunner {
     /**
      * Create tasks for the specified date.
      * @param {Date} _date Date.
-     * @param {String} _userId User ID.
+     * @param {string} _userId User ID.
      * @returns {Promise<void>} Nothing.
      * @private
      */

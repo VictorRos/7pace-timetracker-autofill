@@ -66,7 +66,7 @@ class TimeTrackerAPI {
 
     /**
      * Delete a work log.
-     * @param {String} _workLogId Work log ID.
+     * @param {string} _workLogId Work log ID.
      * @returns {Promise<object>} Deleted Work log data.
      * @public
      */
