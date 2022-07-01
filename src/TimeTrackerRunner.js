@@ -139,6 +139,11 @@ class TimeTrackerRunner {
 
         Logger.info("Start Time tracker");
 
+        // Show force mode log once
+        if (ContextManager.get().force) {
+            Logger.info("\nForce mode enabled ! Delete all existing work logs (except days off)");
+        }
+
         const me = await TimeTrackerAPI.getMe(); 
 
         // Loop through startDate to endDate
@@ -153,21 +158,47 @@ class TimeTrackerRunner {
             // Existing worklogs
             } else {
                 // Override existing work logs
-                if(ContextManager.get().force) {
-                    Logger.info("Force mode enabled ! Delete all existing work logs (except days off)");
+                if (ContextManager.get().force) {
+                    const daysOff = workLogs.data.filter((_workLog) => _workLog.activityType?.id === ACTIVITY_DAY_OFF);
+                    const hasDaysOff7hours = daysOff.some((_workLog) => _workLog.length === (7 * ONE_HOUR_IN_SEC));
 
-                    // Delete all existing work logs except days off
-                    const workLogNotDelete = await workLogs.data.reduce(async (_prom, _workLog) => {
-                        await _prom;
-                        if (_workLog.activityType?.id !== ACTIVITY_DAY_OFF) {
-                            await TimeTrackerAPI.deleteWorkLog(_workLog.id);
-                        } else {
-                            // Return work log ID
-                            return _workLog.id;
-                        }
-                    }, Promise.resolve());
+                    // Ignore all days that contain one unique work log of 7 hours days off
+                    if (workLogs.data.length === 1 &&
+                        workLogs.data[0].activityType?.id === ACTIVITY_DAY_OFF &&
+                        workLogs.data[0].length === (7 * ONE_HOUR_IN_SEC)
+                    ) {
+                        Logger.info(`--> Ignore ${this.isPublicDay(currentDate)? "public days" : "days off"}.`);
+                        // Update to next day
+                        currentDate = DateFNS.add(currentDate, {days: 1});
+                        continue;
+                    }
 
-                    if(!workLogNotDelete) {
+                    // 7 hours days off + other work logs --> Delete other work logs
+                    if (hasDaysOff7hours && workLogs.data.length > 1) {
+                        Logger.info("Contains 7 hours days off and other work logs --> Delete other work logs.");
+                        await Promise.all(
+                            workLogs.data
+                                .filter((_workLog) => _workLog.activityType?.id !== ACTIVITY_DAY_OFF)
+                                .map(async (_workLog) => {
+                                    return TimeTrackerAPI.deleteWorkLog(_workLog.id);
+                                })
+                        );
+                        // TODO: Fill with work logs to have 7 hours a day
+                    // Contains days off --> Do nothing
+                    } else if (daysOff.length > 0) {
+                        Logger.info("--> Ignore days containing days off.");
+                        // Update to next day
+                        currentDate = DateFNS.add(currentDate, {days: 1});
+                        continue;
+                    // No days off --> Delete work logs
+                    } else {
+                        Logger.info("Delete all work logs.");
+                        await Promise.all(
+                            workLogs.data.map(async (_workLog) => {
+                                return TimeTrackerAPI.deleteWorkLog(_workLog.id);
+                            })
+                        );
+                        // Fill with work logs to have 7 hours a day
                         await this.createTasks(currentDate, me.data.user.id);
                     }
                 // Fill with work logs to have 7 hours a day
