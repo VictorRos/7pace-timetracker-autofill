@@ -13,6 +13,11 @@ const ACTIVITY_SAAS_OPERATION = "6e00c587-525c-4c1d-880e-0e20fd815dd5";     // 0
 const ACTIVITY_DEVELOPMENT = "c30c3a6d-aacd-46b2-833d-acd3d33d830d";        // 03. Development
 const ACTIVITY_DAY_OFF = "61e63283-5eec-4853-9a1a-a15550da0d46";            // 17. OoB : Time off
 
+// France public days
+const PUBLIC_DAY_TASKS = [
+    {lengthInHour: 7, activityTypeId: ACTIVITY_DAY_OFF, comment: "Jour férié"}
+];
+
 // Work logs added each day (4 hours)
 const STATIC_WORKING_DAY_TASKS = [
     {lengthInHour: 1, activityTypeId: ACTIVITY_PROJECT_MANAGEMENT, comment: "Daily DevOps & Réunions diverses"},
@@ -25,10 +30,6 @@ const DYNAMIC_WORKING_DAY_TASKS = [
     {lengthInHour: 0, activityTypeId: ACTIVITY_DEVELOPMENT,    comment: "Dev + PRs"},
     {lengthInHour: 0, activityTypeId: ACTIVITY_SAAS_OPERATION, comment: "Support Production"},
     {lengthInHour: 0, activityTypeId: ACTIVITY_SAAS_OPERATION, comment: "Support Dev"}
-];
-// France public days
-const PUBLIC_DAY_TASKS = [
-    {lengthInHour: 7, activityTypeId: ACTIVITY_DAY_OFF, comment: "Jour férié"}
 ];
 
 class TimeTrackerRunner {
