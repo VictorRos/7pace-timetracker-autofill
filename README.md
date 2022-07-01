@@ -7,7 +7,7 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
     - [Local installation](#local-installation)
       - [CLI mode](#cli-mode)
       - [Env file mode](#env-file-mode)
-  - [Secrets](#secrets)
+  - [Reporting API token](#reporting-api-token)
   - [License](#license)
 
 ## How it works?
@@ -19,7 +19,9 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   ```bash
   # SSH
   git clone git@github.com:VictorRos/7pace-timetracker-autofill.git
+  ```
 
+  ```bash
   # HTTPS
   git clone https://github.com/VictorRos/7pace-timetracker-autofill.git
   ```
@@ -38,7 +40,7 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   node index.js \
     --start-date=<Start date YYYY-MM-DD> \
     --end-date=<End date YYYY-MM-DD (included)> \
-    --time-tracker-api-token=<SECRET Bearer token>
+    --time-tracker-api-token=<Reporting API Token>
   ```
 
 #### Env file mode
@@ -49,7 +51,9 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   # Start and end dates
   TIME_TRACKER_START_DATE=<Start date YYYY-MM-DD>
   TIME_TRACKER_END_DATE=<End date YYYY-MM-DD (included)>
-  TIME_TRACKER_API_TOKEN=<SECRET Bearer token>
+
+  # Time tracker Reporting API token
+  TIME_TRACKER_API_TOKEN=<Reporting API Token>
   ```
 
 - Run node script.
@@ -58,7 +62,9 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   node index.js
   ```
 
-## Secrets
+## Reporting API token
+
+**Reporting API token** is a personal token you can generate in Azure DevOps.
 
 How to get secret **Reporting API token**
 
