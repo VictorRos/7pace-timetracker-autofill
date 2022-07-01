@@ -40,6 +40,7 @@ const context = Yargs(hideBin(process.argv))
     })
     // Time tracker options
     .option("time-tracker-api-token", {
+        alias: "t",
         description: "Time tracker API token used to create work logs",
         type: "string",
         default: process.env.TIME_TRACKER_API_TOKEN
