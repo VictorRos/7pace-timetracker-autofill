@@ -9,15 +9,17 @@ import TimeTrackerAPI from "./TimeTrackerAPI.js";
 const ONE_HOUR_IN_SEC = 3600;
 
 const ACTIVITY_PROJECT_MANAGEMENT = "d968a6e5-6d9f-4fa2-b248-5201bd9a3015"; // 00. Project management and meetings
-const ACTIVITY_DEVELOPMENT = "c30c3a6d-aacd-46b2-833d-acd3d33d830d"; // 03. Development
-const ACTIVITY_SAAS_OPERATION = "6e00c587-525c-4c1d-880e-0e20fd815dd5"; // 01. Deployment: SAAS Opérations
-const ACTIVITY_DAY_OFF = "61e63283-5eec-4853-9a1a-a15550da0d46"; // 17. OoB : Time off
-// Worklogs added each day (4 hours)
+const ACTIVITY_SAAS_OPERATION = "6e00c587-525c-4c1d-880e-0e20fd815dd5";     // 01. Deployment: SaaS Operations
+const ACTIVITY_DEVELOPMENT = "c30c3a6d-aacd-46b2-833d-acd3d33d830d";        // 03. Development
+const ACTIVITY_DAY_OFF = "61e63283-5eec-4853-9a1a-a15550da0d46";            // 17. OoB : Time off
+
+// Work logs added each day (4 hours)
 const STATIC_WORKING_DAY_TASKS = [
     {lengthInHour: 1, activityTypeId: ACTIVITY_PROJECT_MANAGEMENT, comment: "Daily DevOps & Réunions diverses"},
     {lengthInHour: 3, activityTypeId: ACTIVITY_DEVELOPMENT,        comment: "DevOps"}
 ];
-// Worklogs added randomly each day (3 hours)
+
+// Work logs added randomly each day (3 hours)
 const REMAINING_HOURS = 3;
 const DYNAMIC_WORKING_DAY_TASKS = [
     {lengthInHour: 0, activityTypeId: ACTIVITY_DEVELOPMENT,    comment: "Dev + PRs"},
