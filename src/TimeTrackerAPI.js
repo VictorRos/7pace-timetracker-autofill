@@ -5,6 +5,8 @@ import ContextManager from "./ContextManager.js";
 import Logger from "./Logger.js";
 
 class TimeTrackerAPI {
+    static API_VERSION = "api-version=3.2-beta";
+
     /**
      * Returns data from response.
      * @param {AxiosResponse} _response Response.
@@ -31,23 +33,49 @@ class TimeTrackerAPI {
         const day = DateFNS.format(_date, "dd");
 
         const response = await Axios.get(
-            `https://cegid.timehub.7pace.com/MyTimes/WorkLogsJson?day=${day}&month=${month}&year=${year}`,
+            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.API_VERSION}&$fromTimestamp=${year}-${month}-${day}T00:00:00&$toTimestamp=${year}-${month}-${day}T23:59:00`,
             {
                 headers: {
-                    "accept": "*/*",
-                    "client_type": "web",
-                    "page_name": "Monthly",
-                    "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"96\", \"Google Chrome\";v=\"96\"",
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": "\"macOS\"",
-                    "sec-fetch-dest": "empty",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-site": "same-origin",
-                    "x-custom-header": ContextManager.get().timeTrackerXCustomHeader,
-                    "x-requested-with": "XMLHttpRequest",
-                    "cookie": ContextManager.get().timeTrackerCookie,
-                    "Referer": "https://cegid.timehub.7pace.com/",
-                    "Referrer-Policy": "strict-origin-when-cross-origin"
+                    'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
+                }
+            }
+        );
+
+        return this.handleResponse(response);
+    }
+
+    /**
+     * Get information about yourself.
+     * It is possible to use the $expand parameter with this endpoint.
+     * The possible options are { user.displayName }.
+     * @returns {Promise<object>} User info data.
+     * @public
+     */
+    static async getMe() {
+        const response = await Axios.get(
+            `https://cegid.timehub.7pace.com/api/rest/me?${TimeTrackerAPI.API_VERSION}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
+                }
+            }
+        );
+
+        return this.handleResponse(response);
+    }
+
+    /**
+     * Delete a work log.
+     * @param {string} _workLogId Work log ID.
+     * @returns {Promise<object>} Deleted Work log data.
+     * @public
+     */
+    static async deleteWorkLog(_workLogId) {
+        const response = await Axios.delete(
+            `https://cegid.timehub.7pace.com/api/rest/workLogs/${_workLogId}?${TimeTrackerAPI.API_VERSION}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
                 }
             }
         );
@@ -63,26 +91,11 @@ class TimeTrackerAPI {
      */
     static async createWorkLogs(_postData) {
         const response = await Axios.post(
-            "https://cegid.timehub.7pace.com/api-internal/rest/worklogs?api-version=3.1",
+            `https://cegid.timehub.7pace.com/api/rest/workLogs?${TimeTrackerAPI.API_VERSION}`,
             _postData,
             {
                 headers: {
-                    "accept": "application/json, text/plain, */*",
-                    "authorization": `Bearer ${ContextManager.get().timeTrackerBearerToken}`,
-                    "client_type": "web",
-                    "content-type": "application/json;charset=UTF-8",
-                    "page_name": "Monthly",
-                    "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"96\", \"Google Chrome\";v=\"96\"",
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": "\"macOS\"",
-                    "sec-fetch-dest": "empty",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-site": "same-origin",
-                    "token": ContextManager.get().timeTrackerToken,
-                    "x-custom-header": ContextManager.get().timeTrackerXCustomHeader,
-                    "cookie": ContextManager.get().timeTrackerCookie,
-                    "Referer": "https://cegid.timehub.7pace.com/",
-                    "Referrer-Policy": "strict-origin-when-cross-origin"
+                    'Authorization': `Bearer ${ContextManager.get().timeTrackerApiToken}`,
                 }
             }
         );

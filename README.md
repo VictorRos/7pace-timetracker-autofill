@@ -7,9 +7,7 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
     - [Local installation](#local-installation)
       - [CLI mode](#cli-mode)
       - [Env file mode](#env-file-mode)
-  - [Secrets](#secrets)
-    - [Time tracker](#time-tracker)
-    - [User ID](#user-id)
+  - [Reporting API token](#reporting-api-token)
   - [License](#license)
 
 ## How it works?
@@ -21,7 +19,9 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   ```bash
   # SSH
   git clone git@github.com:VictorRos/7pace-timetracker-autofill.git
+  ```
 
+  ```bash
   # HTTPS
   git clone https://github.com/VictorRos/7pace-timetracker-autofill.git
   ```
@@ -40,11 +40,7 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   node index.js \
     --start-date=<Start date YYYY-MM-DD> \
     --end-date=<End date YYYY-MM-DD (included)> \
-    --user-id=<Your user ID> \
-    --time-tracker-bearer-token=<Bearer Token retrieved from Chrome developer Tools> \
-    --time-tracker-cookie=<Cookie retrieved from Chrome developer Tools> \
-    --time-tracker-token=<Token retrieved from Chrome developer Tools> \
-    --time-tracker-x-custom-header=<Token retrieved from Chrome developer Tools>
+    --time-tracker-api-token=<Reporting API Token>
   ```
 
 #### Env file mode
@@ -56,14 +52,8 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   TIME_TRACKER_START_DATE=<Start date YYYY-MM-DD>
   TIME_TRACKER_END_DATE=<End date YYYY-MM-DD (included)>
 
-  # User ID
-  TIME_TRACKER_USER_ID=<Your user ID>
-
-  # Time tracker secrets
-  TIME_TRACKER_BEARER_TOKEN=<Bearer Token retrieved from Chrome developer Tools>
-  TIME_TRACKER_COOKIE=<Cookie retrieved from Chrome developer Tools>
-  TIME_TRACKER_TOKEN=<Token retrieved from Chrome developer Tools>
-  TIME_TRACKER_X_CUSTOM_HEADER=<Token retrieved from Chrome developer Tools>
+  # Time tracker Reporting API token
+  TIME_TRACKER_API_TOKEN=<Reporting API Token>
   ```
 
 - Run node script.
@@ -72,38 +62,13 @@ Autofill 7pace timetracker in Azure DevOps for lazy people.
   node index.js
   ```
 
-## Secrets
+## Reporting API token
 
-  1. Go to Monthly page
+**Reporting API token** is a personal token you can generate in Azure DevOps.
 
-     https://dev.azure.com/ORGANIZATION/PROJECT/_apps/hub/7pace.Timetracker.Monthly
+How to get secret **Reporting API token**
 
-     Replace `ORGANIZATION` and `PROJECT` with yours.
-
-  2. Open **Chrome developer Tools** when you are on Timetracker Monthly page.
-
-  3. Go to **Network** tab, clear all entries.
-
-  4. Select a day with existing work logs, click on **Edit** then click on **Save**.
-
-  5. In **Network** entries, select the first one.
-
-### Time tracker
-
-From previous API call, retrieve:
-
-- `TIME_TRACKER_BEARER_TOKEN` in request header **authorization** without **Bearer** and the space!
-- `TIME_TRACKER_COOKIE` in request header **cookie**
-- `TIME_TRACKER_TOKEN` in request header **token**
-- `TIME_TRACKER_X_CUSTOM_HEADER` in request header **x-custom-header**
-
-![How-to-get-secrets.png](./doc/How-to-get-secrets.png)
-
-### User ID
-
-From previous API call, retrieve `TIME_TRACKER_USER_ID` from **Payload**
-
-![How-to-get-user-id.png](./doc/How-to-get-user-id.png)
+[![Reporting API token video](https://img.youtube.com/vi/g2xyQtOhqS4/0.jpg)](https://www.youtube.com/watch?v=g2xyQtOhqS4 "Everything Is AWESOME")
 
 ## License
 
