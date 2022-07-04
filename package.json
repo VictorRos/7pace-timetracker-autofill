@@ -26,6 +26,9 @@
     "DevOps"
   ],
   "author": "Victor Ros",
+  "contributors": [
+    "snaquekiller"
+  ],
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "@socialgouv/jours-feries": "^2.0.0",
