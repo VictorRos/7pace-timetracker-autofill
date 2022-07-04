@@ -157,7 +157,7 @@ class TimeTrackerRunner {
                 ...commonData
             };
 
-            await TimeTrackerAPI.createWorkLogs(postData);
+            await TimeTrackerAPI.createWorkLog(postData);
         }, Promise.resolve());
     }
 
